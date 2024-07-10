@@ -1,11 +1,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    private let gameLength = 8
+    
     @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
     @State private var correctAnswer = Int.random(in: 0...2)
     
     @State private var showingScore = false
+    @State private var showingGameFinished = false
+    
     @State private var scoreTitle = ""
+    @State private var scoreMessage = ""
+    @State private var totalScore = 0
+    @State private var currentGameState = 0
     
     var body: some View {
         ZStack {
@@ -48,24 +55,38 @@ struct ContentView: View {
                 Spacer()
                 Spacer()
                 
-                Text("Score: ???")
+                Text("Score: \(totalScore)")
                     .font(.title.bold())
                 
                 Spacer()
             }.padding()
         }
+        .alert("You finished with a score of: \(totalScore)", isPresented: $showingGameFinished) {
+            Button("Play Again", action: {
+                resetGame()
+                askQuestion()
+            })
+        }
         .alert(scoreTitle, isPresented: $showingScore) {
             Button("Continue", action: askQuestion)
         } message: {
-            Text("Your score is ???")
+            Text(scoreMessage)
         }
     }
     
     func flagTapped(_ number: Int) {
         if number == correctAnswer {
             scoreTitle = "Corret"
+            totalScore += 1
+            scoreMessage = ""
         } else {
             scoreTitle = "Wrong"
+            scoreMessage = "That's the flag of \(countries[number])"
+        }
+        
+        if currentGameState == gameLength {
+            showingGameFinished = true
+            return
         }
         
         showingScore = true
@@ -74,6 +95,14 @@ struct ContentView: View {
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+        currentGameState += 1
+    }
+    
+    func resetGame() {
+        scoreTitle = ""
+        scoreMessage = ""
+        totalScore = 0
+        currentGameState = 0
     }
 }
 
