@@ -1,5 +1,33 @@
 import SwiftUI
 
+struct FlagImageView: View {
+    var flagName: String
+    
+    init(_ flagName: String) {
+        self.flagName = flagName
+    }
+    
+    var body: some View {
+        Image(flagName)
+            .clipShape(.capsule)
+            .shadow(radius: 5)
+    }
+}
+
+struct WelcomeTitleModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle.bold())
+            .foregroundStyle(.white)
+    }
+}
+
+extension View {
+    func welcome() -> some View {
+        modifier(WelcomeTitleModifier())
+    }
+}
+
 struct ContentView: View {
     private let gameLength = 8
     
@@ -24,8 +52,7 @@ struct ContentView: View {
             VStack {
                 Spacer()
                 Text("Guess the flag")
-                    .font(.largeTitle.bold())
-                    .foregroundStyle(.white)
+                    .welcome()
                 
                 VStack(spacing: 15) {
                     VStack {
@@ -40,10 +67,7 @@ struct ContentView: View {
                         Button {
                             flagTapped(number)
                         } label: {
-                            Image(countries[number])
-                                .clipShape(.capsule)
-                                .shadow(radius: 5)
-                            
+                            FlagImageView(countries[number])
                         }
                     }
                 }
