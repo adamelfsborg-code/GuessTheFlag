@@ -42,13 +42,16 @@ struct ContentView: View {
     @State private var totalScore = 0
     @State private var currentGameState = 0
     
+    @State private var animationAmount = 0.0
+    @State private var tappedFlag = -1
+    
     var body: some View {
         ZStack {
             RadialGradient(stops: [
                 .init(color: .indigo, location: 0.3),
                 .init(color: .cyan.opacity(0.5), location: 0.3)
             ], center: .top, startRadius: 200, endRadius: 700)
-                .ignoresSafeArea()
+            .ignoresSafeArea()
             VStack {
                 Spacer()
                 Text("Guess the flag")
@@ -65,9 +68,21 @@ struct ContentView: View {
                     
                     ForEach(0..<3) { number in
                         Button {
+                            tappedFlag = number
+                            withAnimation {
+                                animationAmount += 360
+                            }
                             flagTapped(number)
                         } label: {
                             FlagImageView(countries[number])
+                                .rotation3DEffect(
+                                    .degrees(tappedFlag == number ? animationAmount : 0),
+                                    axis: (x: 0, y: 0, z: 1)
+                                )
+                                .opacity(tappedFlag >= 0 && tappedFlag != number ? 0.25 : 1)
+                                .animation(.easeOut, value: tappedFlag)
+                                .scaleEffect(tappedFlag >= 0 && tappedFlag != number ? 0.5 : 1)
+                                .animation(tappedFlag >= 0 && tappedFlag != number ? .default : nil, value: 0)
                         }
                     }
                 }
@@ -120,6 +135,7 @@ struct ContentView: View {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
         currentGameState += 1
+        tappedFlag = -1
     }
     
     func resetGame() {
