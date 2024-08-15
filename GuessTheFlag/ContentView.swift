@@ -37,6 +37,20 @@ struct ContentView: View {
     @State private var showingScore = false
     @State private var showingGameFinished = false
     
+    let labels = [
+        "Estonia": "Flag with three horizontal stripes. Top stripe blue, middle stripe black and bottom stripe white.",
+        "France": "Flag with three vertical stripes. Left stripe blue, middle stripe white and right stripe red.",
+        "Germany": "Flag with three horizontal stripes. Top stripe black, middle stripe red and bottom stripe yellow.",
+        "Ireland": "Flag with three vertical stripes. Left green, middle white and right orange.",
+        "Italy": "Flag with three vertical stripes. Left green, middle white and right red.",
+        "Nigeria": "Flag with three vertical stripes. Sides green and middle white.",
+        "Poland": "Flag with do horizontal stripes. Top white and bottom red.",
+        "Spain": "Flag with three horizontal stripes. Top and bottom red and middle yellow.",
+        "UK": "Flag with overlapping red and white crosses, both straight and diagonally on a blue background",
+        "Ukraine": "Flag with horizontal stripes. Top blue and bottom yellow.",
+        "US": "Flag with many red and white stripes, with white stars on a blue background in the top left corner."
+    ]
+    
     @State private var scoreTitle = ""
     @State private var scoreMessage = ""
     @State private var totalScore = 0
@@ -84,6 +98,7 @@ struct ContentView: View {
                                 .scaleEffect(tappedFlag >= 0 && tappedFlag != number ? 0.5 : 1)
                                 .animation(tappedFlag >= 0 && tappedFlag != number ? .default : nil, value: 0)
                         }
+                        .accessibilityLabel(labels[countries[number], default: "Unkown flag"])
                     }
                 }
                 .frame(maxWidth: .infinity)
